@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+    <h1>Hello this is index Page</h1>
+
+    <div>
+        <h1 style="color:deeppink">Chat Here! MOTHER FUCKER!!!</h1>
+        <div id="chatContainer"></div>
+    </div>
+
+    <input type="text" placeholder="Type " id="inputId">
+    <button id="buttonText">Send Massage</button>
+
+    <script>
+        let socket = new WebSocket("ws://localhost:8080/ws")
+
+        console.log('Attempting WebSocket Connection.')
+
+        socket.onopen = () => {
+            console.log("Successfully Connected")
+        }
+
+        socket.onmessage = (message) => {
+            console.log("message :", message.data)
+            console.log("message :", message)
+            let chatContainer = document.getElementById("chatContainer")
+
+            const {IP, Message} = JSON.parse(message.data)
+
+            chatContainer.innerHTML += `<p>IP ${IP} :  ${Message}</p>`
+        }
+
+        socket.onclose = (event) => {
+            console.log("Socket Closed Connection : ", event)
+        }
+
+        socket.onerror = (error) => {
+            console.log("Socket Error : ", error)
+        }
+
+        let inputValue = document.getElementById('inputId')
+        let sendButton = document.getElementById('buttonText')
+
+        sendButton.addEventListener('click', () => {
+            console.log("inputValue -> ", inputValue.value)
+            socket.send(inputValue.value)
+            inputValue.value = ""
+        })
+    </script>
+
+    <style>
+        #chatContainer{
+         height: 500px;
+         width: 300px;
+         overflow-y: auto;
+        }
+    </style>
+
+</body>
+</html>
