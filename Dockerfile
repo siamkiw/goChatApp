@@ -6,10 +6,16 @@
 
 FROM golang:1.16
 
-WORKDIR /go/src/app
-COPY . .
+RUN mkdir /app
+ADD . /app
 
-RUN go get -d -v ./...
-RUN go install -v ./...
+WORKDIR /app
 
-CMD ["app"]
+RUN go build -o main .
+
+CMD ["/app/main"]
+
+#RUN go get -d -v ./
+#RUN go install -v ./
+#
+#CMD ["app"]
